@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+app="timeoff_mysql"
+data_dir="$HOME/timeoff_mysql_data"
+if docker ps | awk -v app="app" 'NR>1{  ($(NF) == app )  }'; then
+  docker stop "$app" && docker rm -f "$app"
+fi
+mkdir -p "$data_dir"
+docker run \
+    --network timeoff \
+    --restart=always \
+    -d \
+    --name "$app" \
+    -v "$data_dir":/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=msql_root_password \
+    -e MYSQL_PASSWORD=mysql_password \
+    -e MYSQL_DATABASE=timeoff \
+    -e MYSQL_USER=timeoff \
+    mariadb:10.3.7

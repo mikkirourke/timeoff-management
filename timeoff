@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+app="timeoff"
+data_dir="$HOME/timeoff_config"
+if docker ps | awk -v app="app" 'NR>1{  ($(NF) == app )  }'; then
+  docker stop "$app" && docker rm -f "$app"
+fi
+mkdir -p "$data_dir"
+docker run \
+    --network timeoff \
+    --restart=always \
+    -d \
+    -p 3000:3000 \
+    --name "$app" \
+    -v "$data_dir":/opt/timeoff-management/config \
+    -e ALLOW_ACCOUNTS_CREATION=true \
+    -e NODE_ENV=production \
+    -e MYSQL_PASSWORD=mysql_password \
+    -e MYSQL_DATABASE=timeoff \
+    -e MYSQL_USER=timeoff \
+    -e MYSQL_HOST=timeoff_mysql \
+    -e SENDER_MAIL=example@mail.com \
+    -e SMTP_HOST=smtp.mail.com \
+    -e SMTP_PORT=587 \
+    -e SMTP_USER=smtp_user \
+    -e SMTP_PASSWORD=smtp_password \
+    mikkirourke/timeoff-management:1.0.0

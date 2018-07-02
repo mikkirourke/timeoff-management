@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "${BACKUP_TIME:-0 3 * * *} root . /etc/profile.d/container_environment.sh;/usr/bin/backup" >> /etc/crontab

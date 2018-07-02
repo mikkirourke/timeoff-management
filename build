@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+img="mikkirourke/timeoff-management:1.0.0"
+
+rm -rf restic
+
+git clone https://github.com/restic/restic
+
+docker run --rm -ti \
+    -v `pwd`/restic:/go/src/github.com/restic/restic \
+    -w /go/src/github.com/restic/restic golang:1.9.0-alpine go run build.go
+
+docker build --no-cache -t $img .
+
+rm -rf restic

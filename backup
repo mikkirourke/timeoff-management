@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+function db_dump() {
+  repo=${RESTIC_REPOSITORY}/timeoff_mysql
+  mysqldump  --host=$1 --password=$2  | \
+  restic -r $repo backup --stdin
+}
+
+db_dump $MYSQL_HOST $MYSQL_ROOT_PASSWORD
